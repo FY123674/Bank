@@ -3,22 +3,11 @@
   padding: 0;
 }
 body {
-  header {
-    background-color: #ffffff;
-    padding: 10px 0;
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
-  }
-
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
 
   .material-symbols-outlined {
     padding: 8px;
     font-size: 40px;
-    color: #000000;
+    color: $black;
   }
 
   section {
@@ -26,6 +15,7 @@ body {
     flex-flow: column;
     align-items: center;
     margin: 72px 0px;
+    padding-top: 96px;
   }
 
   .title {
@@ -51,26 +41,8 @@ body {
     font-size: 16px;
     color: #ffffff;
     padding: 16px 32px;
+    border-width: 0;
     border-radius: 32px;
-  }
-
-  footer {
-    background-color: $lightgray;
-    padding: 72px 192px;
-    @include display(row nowrap, space-between);
-
-    .material-symbols-rounded {
-      @include font(80, null, #000000);
-    }
-
-    .footer-right {
-      @include display(row);
-      gap: 24px;
-    }
-
-    .footer-right-content {
-      @include display(column, center);
-    }
   }
   
 }

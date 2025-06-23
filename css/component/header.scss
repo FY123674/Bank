@@ -1,0 +1,21 @@
+header {
+  background-color: $black;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999; // 確保在最上層
+  padding: 10px 20px;
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    img {
+      width: 128px;
+      height: 96px;
+      object-fit: cover;
+    }
+  }
+}

@@ -1,5 +1,6 @@
-$system: #141363;  
+$system: #EBB211;  
 $lightgray:  #f5f5f5;
+$black: #222626;
 @mixin display($flow: null, $justify: null, $align: null) {
   display: flex;
   @if $flow != null {
@@ -26,4 +27,7 @@ $lightgray:  #f5f5f5;
     text-align: $align;
   }
 }
-@import "loan.scss";
+@import "page/loanApplication.scss";
+@import "page/loanApplicationForm.scss";
+@import "component/header.scss";
+@import "component/footer.scss";

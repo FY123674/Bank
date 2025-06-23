@@ -1,0 +1,18 @@
+footer {
+  background-color: $lightgray;
+  padding: 32px 192px;
+  @include display(row nowrap, space-between);
+
+  .material-symbols-rounded {
+    @include font(80, null, $black);
+  }
+
+  .footer-right {
+    @include display(row);
+    gap: 24px;
+  }
+
+  .footer-right-content {
+    @include display(column, center);
+  }
+}
