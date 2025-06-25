@@ -13,47 +13,61 @@
 <body>
  <header>
    <div class="logo">
-     <img src="../img/logo.svg" alt="logo" />
+     <img src="../img/logo_black.svg" alt="logo" />
    </div>
  </header>
  <section>
-   <h2>貸款申請表單</h2>
-   <form action="/InsertLoan" method="post">
-     <!-- 使用者 ID -->
-     <label for="mid">會員 ID:</label>
-     <input type="number" name="mid" id="mid" required placeholder="請輸入您的會員編號" />
-     <!-- 貸款金額 -->
-     <label for="loanAmount">貸款金額（萬元）:</label>
-     <input type="number" name="loanAmount" id="loanAmount" min="1" max="500" required placeholder="最多 500 萬元" />
-     <!-- 貸款期數 -->
-     <label for="loanTerm">貸款期數（月）:</label>
-     <select name="loanTerm" id="loanTerm" required>
-       <option value="6">6 個月</option>
-       <option value="9">9 個月</option>
-       <option value="12">12 個月</option>
-       <option value="24">24 個月</option>
-       <option value="36">36 個月</option>
-       <option value="48">48 個月</option>
-       <option value="60">60 個月</option>
-     </select>
-     <!-- 貸款類型 -->
-     <label for="loanTypeId">貸款類型:</label>
-     <select name="loanTypeId" id="loanTypeId" required>
-       <option value="CAR">車貸</option>
-       <option value="HOUSE">房貸</option>
-       <option value="EDU">就學貸款</option>
-     </select>
-     <!-- 開始日期 -->
-     <label for="loanstartDate">貸款開始日期:</label>
-     <input type="date" name="loanstartDate" id="loanstartDate" required />
-     <!-- 隱藏欄位 -->
-     <input type="hidden" name="approvalStatus" value="PENDING" />
-     <input type="hidden" name="createdAt" id="createdAt" />
-     <input type="hidden" name="updatedAt" id="updatedAt" />
-     <!-- 送出 -->
-     <button type="submit">送出申請</button>
-   </form>
- </section>
+  <h2>貸款申請表單</h2>
+  <form action="/bank/InsertLoan" method="post">
+    <!-- 使用者 ID -->
+    <label for="mid">會員 ID:</label> <input type="number" name="mid" id="mid" required placeholder="請輸入您的會員編號" />
+    <!-- 貸款金額 -->
+    <label for="loanAmount">貸款金額（萬元）:</label>
+    <div class="input-with-unit">
+      <input type="number" name="loanAmount" id="loanAmount" min="1" max="500" required
+        placeholder="最多 500 萬元" /> <span>萬</span>
+    </div>
+    <!-- 貸款類型 -->
+    <label for="loanTypeId">貸款類型:</label>
+    <div class="custom-select-wrapper">
+      <select name="loanTypeId" id="loanTypeId" required onchange="fetchInterestRate();">
+        <option value="LT001">車貸</option>
+        <option value="LT002">房貸</option>
+        <option value="LT003">就學貸款</option>
+      </select>
+      <span class="material-symbols-outlined custom-icon">keyboard_arrow_down</span>
+    </div>
+
+    <!-- 貸款期數 -->
+    <label for="loanTermId">貸款期數（月）:</label>
+    <div class="custom-select-wrapper">
+      <select name="loanTermId" id="loanTermId" onchange="updateLoanTerm(); fetchInterestRate();">
+        <option value="TERM001" data-month="6">6 個月</option>
+        <option value="TERM001" data-month="9">9 個月</option>
+        <option value="TERM001" data-month="12">12 個月</option>
+        <option value="TERM002" data-month="24">24 個月</option>
+        <option value="TERM002" data-month="36">36 個月</option>
+        <option value="TERM003" data-month="48">48 個月</option>
+        <option value="TERM003" data-month="60">60 個月</option>
+      </select>
+      <span class="material-symbols-outlined custom-icon">keyboard_arrow_down</span>
+    </div>
+    <!-- 隱藏實際貸款月數的欄位 -->
+    <input type="hidden" name="loanTerm" id="loanTermHidden" />
+    <!-- 開始日期 -->
+    <label for="loanstartDate">貸款開始日期:</label> <input type="date" name="loanstartDate" id="loanstartDate"
+      required />
+    <!-- 利率顯示區塊 -->
+    <div>
+      <label>預估利率：</label> <span id="interestRateDisplay">--%</span>
+    </div>
+    <!-- 隱藏欄位 -->
+    <input type="hidden" name="approvalStatus" value="PENDING" />
+    <!-- 送出 -->
+    <button type="submit">送出申請</button>
+  </form>
+</section>
+
  <footer>
    <div class="footer-left">
      <h3>YuzuBank</h3>
@@ -70,10 +84,30 @@
    </div>
  </footer>
  <script>
-   // 自動補上 createdAt 和 updatedAt 為現在時間（ISO 格式）
-   const now = new Date().toISOString();
-   document.getElementById("createdAt").value = now;
-   document.getElementById("updatedAt").value = now;
- </script>
+  function updateLoanTerm() {
+    const select = document.getElementById("loanTermId");
+    const selectedOption = select.options[select.selectedIndex];
+    const months = selectedOption.getAttribute("data-month");
+    console.log(months);
+    document.getElementById("loanTermHidden").value = months;
+  }
+  function fetchInterestRate() {
+    updateLoanTerm(); // 確保 loanTerm 有值
+    const type = document.getElementById("loanTypeId").value;
+    const term = document.getElementById("loanTermId").value;
+    console.log("loanTypeId:", type);
+    console.log("loanTermId:", term);
+    fetch(`/bank/GetInterestRate?loanTypeId=${type}&loanTermId=${term}`)
+      .then(res => res.json())
+      .then(data => {
+        const rate = (parseFloat(data.rate) * 100).toFixed(2);
+        document.getElementById("interestRateDisplay").innerText = `${rate}%`;
+      })
+      .catch(err => {
+        console.error("利率取得錯誤", err);
+      });
+  }
+</script>
+
 </body>
 </html>
