@@ -7,7 +7,10 @@ header {
   z-index: 999; // 確保在最上層
   padding: 10px 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  
   .logo {
     display: flex;
     align-items: center;
@@ -18,5 +21,8 @@ header {
       height: 80px;
       object-fit: cover;
     }
+    
   }
+
+  
 }
